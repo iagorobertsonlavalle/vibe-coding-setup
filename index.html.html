@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vibe Coding Setup Guide</title>
+<style>
+  :root {
+    --navy: #2F3C7E;
+    --navy-dark: #232B5C;
+    --coral: #F96167;
+    --gold: #C9982E;
+    --cream: #FFF9EC;
+    --ink: #26264A;
+    --muted: #62628A;
+    --border: #E7E1D2;
+    --bg: #FFFFFF;
+    --panel: #FFF9EC;
+    --code-bg: #1B1F3D;
+    --code-text: #E8E9F5;
+    --code-border: #3A4180;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 84px); }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #171A32;
+      --panel: #1F2344;
+      --ink: #EDEDF7;
+      --muted: #ABAAD1;
+      --border: #33376A;
+      --code-bg: #10122A;
+      --code-border: #414A8C;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #171A32;
+    --panel: #1F2344;
+    --ink: #EDEDF7;
+    --muted: #ABAAD1;
+    --border: #33376A;
+    --code-bg: #10122A;
+    --code-border: #414A8C;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Calibri, "Segoe UI", system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .headfont { font-family: Cambria, Georgia, "Times New Roman", serif; }
+
+  /* ---- top bar ---- */
+  .topbar {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 20;
+    background: var(--navy);
+    color: #fff;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .topbar h1 {
+    font-size: 17px;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+  .os-toggle {
+    display: inline-flex;
+    background: rgba(255,255,255,0.14);
+    border-radius: 999px;
+    padding: 3px;
+    gap: 3px;
+  }
+  .os-toggle button {
+    border: none;
+    background: transparent;
+    color: #E5E7F5;
+    padding: 7px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  body[data-os="mac"] .os-toggle button[data-set="mac"],
+  body[data-os="win"] .os-toggle button[data-set="win"] {
+    background: var(--coral);
+    color: #fff;
+  }
+
+  main {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 36px 20px 80px;
+  }
+
+  .lede {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 62ch;
+  }
+
+  .checklist {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 22px 0 34px;
+  }
+  .checklist h2 {
+    font-size: 13px;
+    text-transform: none;
+    color: var(--navy);
+    margin: 0 0 10px;
+    font-weight: 700;
+  }
+  :root[data-theme="dark"] .checklist h2, body:not([data-theme="light"]) .checklist h2 { color: #B9C2FF; }
+  .checklist ul { margin: 0; padding-left: 20px; }
+  .checklist li { margin: 4px 0; color: var(--ink); }
+
+  section.step {
+    display: flex;
+    gap: 16px;
+    padding: 28px 0;
+    border-top: 1px solid var(--border);
+  }
+  section.step:first-of-type { border-top: none; }
+
+  .num {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--coral);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Cambria, Georgia, serif;
+    font-weight: 700;
+    font-size: 15px;
+    margin-top: 2px;
+  }
+  .num.optional { background: var(--navy); }
+
+  .step-body { flex: 1 1 auto; min-width: 0; }
+  .step-body h3 {
+    margin: 0 0 4px;
+    font-size: 19px;
+  }
+  .step-body .why {
+    color: var(--muted);
+    font-size: 14.5px;
+    margin: 0 0 14px;
+  }
+  .badge-optional {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--navy);
+    background: #E9ECFB;
+    border-radius: 999px;
+    padding: 2px 9px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  :root[data-theme="dark"] .badge-optional, body:not([data-theme="light"]) .badge-optional {
+    background: #2C3268; color: #C7CFFF;
+  }
+
+  .step-body p { margin: 10px 0; }
+  .step-body ol, .step-body ul { padding-left: 22px; margin: 10px 0; }
+  .step-body li { margin: 6px 0; }
+
+  code.inline {
+    font-family: Consolas, "SFMono-Regular", Menlo, monospace;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 5px;
+    font-size: 0.92em;
+  }
+
+  .codeblock {
+    position: relative;
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 10px;
+    margin: 12px 0;
+    overflow: hidden;
+  }
+  .codeblock pre {
+    margin: 0;
+    padding: 14px 46px 14px 16px;
+    overflow-x: auto;
+    font-family: Consolas, "SFMono-Regular", Menlo, monospace;
+    font-size: 13.5px;
+    color: var(--code-text);
+    line-height: 1.5;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255,255,255,0.08);
+    color: #cfd3f2;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 6px;
+    font-size: 11.5px;
+    padding: 4px 9px;
+    cursor: pointer;
+    font-family: Calibri, sans-serif;
+  }
+  .copy-btn:hover { background: rgba(255,255,255,0.16); }
+
+  .os-mac, .os-win { display: none; }
+  body[data-os="mac"] .os-mac { display: block; }
+  body[data-os="win"] .os-win { display: block; }
+  body[data-os="mac"] span.os-mac,
+  body[data-os="win"] span.os-win { display: inline; }
+
+  .callout {
+    background: var(--panel);
+    border-left: 4px solid var(--coral);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 14.5px;
+  }
+  .callout b { color: var(--navy); }
+  :root[data-theme="dark"] .callout b, body:not([data-theme="light"]) .callout b { color: #B9C2FF; }
+
+  details.trouble {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 10px 0;
+  }
+  details.trouble summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 15px;
+  }
+  :root[data-theme="dark"] details.trouble summary, body:not([data-theme="light"]) details.trouble summary { color: #B9C2FF; }
+  details.trouble p { margin: 10px 0 2px; color: var(--ink); font-size: 14.5px; }
+
+  footer {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 10px 20px 60px;
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+
+  @media (max-width: 520px) {
+    .topbar h1 { font-size: 15px; }
+    .step-body h3 { font-size: 17px; }
+  }
+</style>
+</head>
+<body data-os="mac">
+
+<div class="topbar">
+  <h1 class="headfont">🖥️ Vibe Coding Setup Guide</h1>
+  <div class="os-toggle" role="group" aria-label="Choose your operating system">
+    <button data-set="mac" onclick="setOS('mac')">macOS</button>
+    <button data-set="win" onclick="setOS('win')">Windows</button>
+  </div>
+</div>
+
+<main>
+  <p class="lede">Everything on this page assumes you've never opened a terminal before. By the end, you'll have Node.js, Git, VS Code, and (optionally) Claude Code running on your own machine — the same tools used in the talk.</p>
+
+  <div class="checklist">
+    <h2>WHAT YOU'LL HAVE WORKING BY THE END</h2>
+    <ul>
+      <li>A terminal that understands <code class="inline">node -v</code> and <code class="inline">npm -v</code></li>
+      <li>Git installed, so <code class="inline">git push</code> actually works</li>
+      <li>VS Code, so you can see and edit the files Claude writes</li>
+      <li><em>(Optional)</em> Claude Code, so Claude can run those commands for you</li>
+    </ul>
+  </div>
+
+  <section class="step">
+    <div class="num">1</div>
+    <div class="step-body">
+      <h3>Install Node.js &amp; npm</h3>
+      <p class="why">Next.js — and the app you'll build — runs on Node. npm (Node's package manager) comes bundled with it.</p>
+
+      <div class="os-mac">
+        <ol>
+          <li>Go to <code class="inline">nodejs.org</code> and download the button labeled <strong>LTS</strong>.</li>
+          <li>Open the downloaded <code class="inline">.pkg</code> file and click through the installer (defaults are fine).</li>
+          <li>Open the <strong>Terminal</strong> app (search for it with Spotlight — <code class="inline">Cmd + Space</code>, type "Terminal").</li>
+          <li>Check it worked:</li>
+        </ol>
+      </div>
+      <div class="os-win">
+        <ol>
+          <li>Go to <code class="inline">nodejs.org</code> and download the button labeled <strong>LTS</strong>.</li>
+          <li>Run the downloaded <code class="inline">.msi</code> installer. Keep clicking Next — leave "Add to PATH" checked (it's on by default).</li>
+          <li>Open <strong>PowerShell</strong> (search for it in the Start menu).</li>
+          <li>Check it worked:</li>
+        </ol>
+      </div>
+
+      <div class="codeblock">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>node -v
+npm -v</pre>
+      </div>
+      <p>Both should print a version number (like <code class="inline">v22.11.0</code>). If you instead see "command not found," close the terminal completely and reopen it — installers set your PATH, but windows already open don't see the update.</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="num">2</div>
+    <div class="step-body">
+      <h3>Install Git</h3>
+      <p class="why">Git is the tool that actually does <code class="inline">git push</code> — separate from having a GitHub <em>account</em>.</p>
+
+      <div class="os-mac">
+        <ol>
+          <li>Open Terminal and type:</li>
+        </ol>
+        <div class="codeblock">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre>git --version</pre>
+        </div>
+        <p>If it's not already installed, macOS will pop up a prompt to install the "Xcode Command Line Tools." Click <strong>Install</strong> and wait a few minutes — that installs Git along with it.</p>
+      </div>
+      <div class="os-win">
+        <ol>
+          <li>Go to <code class="inline">git-scm.com</code>, download, and run the Windows installer.</li>
+          <li>Keep the default options — this also installs <strong>Git Bash</strong>, a terminal you can use instead of PowerShell if you prefer.</li>
+          <li>Verify in PowerShell or Git Bash:</li>
+        </ol>
+        <div class="codeblock">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre>git --version</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="num">3</div>
+    <div class="step-body">
+      <h3>Set up GitHub authentication</h3>
+      <p class="why">GitHub no longer accepts your account password for <code class="inline">git push</code> — you need a token instead.</p>
+      <ol>
+        <li>On github.com, click your profile photo → <strong>Settings</strong> → <strong>Developer settings</strong> → <strong>Personal access tokens</strong> → <strong>Tokens (classic)</strong>.</li>
+        <li>Generate a new token, check the <code class="inline">repo</code> scope, and copy the token somewhere safe — GitHub only shows it once.</li>
+        <li>The first time you <code class="inline">git push</code> from a new machine, it'll prompt for a username and password. Enter your GitHub username, then paste the <strong>token</strong> as the password.</li>
+      </ol>
+      <div class="callout"><b>Shortcut:</b> installing the <a href="https://cli.github.com" style="color:inherit">GitHub CLI</a> and running <code class="inline">gh auth login</code> sets this up automatically, no token-copying required.</div>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="num">4</div>
+    <div class="step-body">
+      <h3>Install VS Code</h3>
+      <p class="why">This is where you'll actually see the files Claude writes, and where you'll run the terminal commands above going forward.</p>
+      <div class="os-mac">
+        <ol>
+          <li>Download from <code class="inline">code.visualstudio.com</code> — it's a <code class="inline">.zip</code>.</li>
+          <li>Unzip it and drag <strong>Visual Studio Code</strong> into your Applications folder.</li>
+          <li>Open it, then open the built-in terminal with <code class="inline">Cmd + \`</code> (backtick, top-left of your keyboard).</li>
+        </ol>
+      </div>
+      <div class="os-win">
+        <ol>
+          <li>Download from <code class="inline">code.visualstudio.com</code> — the "Windows" button.</li>
+          <li>Run the installer; leave "Add to PATH" checked.</li>
+          <li>Open it, then open the built-in terminal with <code class="inline">Ctrl + \`</code> (backtick).</li>
+        </ol>
+      </div>
+      <p>From here on, do everything — <code class="inline">npm install</code>, <code class="inline">git push</code>, running Claude Code — from this built-in terminal, so it's always in the right project folder.</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="num optional">5</div>
+    <div class="step-body">
+      <h3>Install Claude Code <span class="badge-optional">optional</span></h3>
+      <p class="why">Lets Claude create files, run <code class="inline">npm install</code>, and push to GitHub directly — instead of you copy-pasting code out of a chat window by hand.</p>
+      <p>In the VS Code terminal:</p>
+      <div class="codeblock">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>npm install -g @anthropic-ai/claude-code</pre>
+      </div>
+      <p>Then start it and log in with your Claude account:</p>
+      <div class="codeblock">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>claude</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="num">6</div>
+    <div class="step-body">
+      <h3>Final check</h3>
+      <p class="why">Run all of these in one go — every line should print a version number.</p>
+      <div class="codeblock">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>node -v
+npm -v
+git --version
+code --version
+claude --version</pre>
+      </div>
+      <p>Skip the last line if you didn't install Claude Code. If everything prints a version, you're ready to build.</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="num">7</div>
+    <div class="step-body">
+      <h3>Troubleshooting</h3>
+
+      <details class="trouble">
+        <summary>"node" or "npm" is not recognized / command not found</summary>
+        <p>Fully quit and reopen your terminal (or restart your computer). The installer updates your PATH, but a terminal window you already had open won't see the change.</p>
+      </details>
+
+      <details class="trouble">
+        <summary class="os-win" style="display:block">PowerShell won't run npm — "running scripts is disabled"</summary>
+        <p class="os-win" style="display:block">Open PowerShell as Administrator once and run <code class="inline">Set-ExecutionPolicy RemoteSigned</code>, then type <code class="inline">Y</code> to confirm. Or just use Git Bash instead of PowerShell — it doesn't have this restriction.</p>
+      </details>
+
+      <details class="trouble">
+        <summary class="os-mac" style="display:block">"permission denied" (EACCES) installing global npm packages</summary>
+        <p class="os-mac" style="display:block">Don't use <code class="inline">sudo</code> — it causes more problems later. This usually means Node was installed in a way that needs admin rights for global installs; reinstalling Node from the official <code class="inline">nodejs.org</code> installer (not Homebrew) usually fixes it.</p>
+      </details>
+
+      <details class="trouble">
+        <summary>git push asks for a password and then rejects it</summary>
+        <p>GitHub disabled plain password auth for git operations. Use a personal access token as the password (Step 3), or set up the GitHub CLI with <code class="inline">gh auth login</code>.</p>
+      </details>
+
+      <details class="trouble">
+        <summary class="os-mac" style="display:block">"code" command doesn't work in Terminal</summary>
+        <p class="os-mac" style="display:block">Open VS Code, press <code class="inline">Cmd+Shift+P</code>, type "Shell Command," and choose <strong>Install 'code' command in PATH</strong>.</p>
+      </details>
+    </div>
+  </section>
+
+  <div class="callout">
+    <b>Next:</b> with everything above installed, you're ready to create your accounts (GitHub, Vercel, Claude, Supabase) and start vibe coding.
+  </div>
+</main>
+
+<footer>Vibe Coding Setup Guide — companion to the talk deck.</footer>
+
+<script>
+  function setOS(os) {
+    document.body.setAttribute('data-os', os);
+    try { localStorage.setItem('vibe-setup-os', os); } catch (e) {}
+  }
+  (function init() {
+    var saved = null;
+    try { saved = localStorage.getItem('vibe-setup-os'); } catch (e) {}
+    if (saved === 'mac' || saved === 'win') {
+      document.body.setAttribute('data-os', saved);
+    } else {
+      var isWin = navigator.platform && navigator.platform.toLowerCase().indexOf('win') !== -1;
+      document.body.setAttribute('data-os', isWin ? 'win' : 'mac');
+    }
+  })();
+  function copyCode(btn) {
+    var pre = btn.parentElement.querySelector('pre');
+    var text = pre.innerText;
+    var done = function () {
+      var old = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(function () { btn.textContent = old; }, 1400);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(function () { fallbackCopy(text, done); });
+    } else {
+      fallbackCopy(text, done);
+    }
+  }
+  function fallbackCopy(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    done();
+  }
+</script>
+
+</body>
+</html>
